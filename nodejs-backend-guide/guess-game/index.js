@@ -1,5 +1,6 @@
 import readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+import fs from 'node:fs/promises';
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -9,6 +10,15 @@ export function checkGuess(secret, guess) {
     if (guess < secret) return 'low';
     if (guess > secret) return 'high';
     return 'correct';
+}
+
+export async function writeTofile(msg) {
+    try {
+        const content = String(msg)
+        await fs.appendFile('./winner.txt', content, 'utf-8')
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 const rl = readline.createInterface({ input, output });
@@ -34,6 +44,7 @@ while (playAgain) {
         } else {
             console.log('Correct!');
             console.log(`You guessed in ${counter} tries`);
+            await writeTofile(`counter ${counter}\n`)
             break;
         }
     }
